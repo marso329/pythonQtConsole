@@ -9,8 +9,11 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <vector>
+#include <boost/python.hpp>
 
 enum EditorMode { normal,historyMode };
+
+using namespace boost::python;
 
 class PythonConsole:public QTextEdit{
 Q_OBJECT
@@ -25,7 +28,11 @@ void addLineToHistory(const std::string& newLine);
 EditorMode mode= normal;
 std::vector<std::string> history;
 std::size_t historyPosition;
+boost::python::object main_module;
+boost::python::dict main_namespace ;
+
 QCompleter* _completer;
+boost::python::object pythonMainModule;
 public Q_SLOTS:
 void keyPressEvent(QKeyEvent *e);
 };

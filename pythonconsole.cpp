@@ -14,6 +14,29 @@ PythonConsole::PythonConsole(QWidget* parent) :
 	mode = normal;
     _completer = new QCompleter(this);
     _completer->setWidget(this);
+    std::string tempName="VideoEditor";
+    try {
+      Py_Initialize();
+      main_module = import("__main__");
+      main_namespace = extract<dict>(main_module.attr("__dict__"));
+      dict builtins=extract<dict>(main_namespace["__builtins__"].attr("__dict__"));
+      list keys = builtins.keys();
+      for (std::size_t i=0;i<len(keys);i++){
+    	  std::cout<<keys[i];
+
+      }
+      //for (auto it=builtins.begin();it!=builtins.end();it++){
+
+      //}
+      //dict globals =extract<dict>(builtins["globals"]());
+
+      handle<> ignored(( PyRun_String( "globals()",
+                                       Py_file_input,
+                                       main_namespace.ptr(),
+                                       main_namespace.ptr() ) ));
+    } catch( error_already_set ) {
+      PyErr_Print();
+    }
 }
 
 void PythonConsole::advanceHistory() {

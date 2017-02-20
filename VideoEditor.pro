@@ -10,8 +10,9 @@ TARGET = VideoEditor
 TEMPLATE = app
 
 CONFIG += qt
+CONFIG += no_keywords
 
-QMAKE_CXXFLAGS += -g -std=c++11
+QMAKE_CXXFLAGS += -g -std=c++11 -shared -Wl,--export-dynamic
 
 DEFINES +=
 
@@ -27,9 +28,9 @@ SOURCES += ./main.cpp \
 HEADERS += ./mainwindow.h \
 		./pythonconsole.h
          
-LIBS +=
+LIBS += -L/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu -lpython3.5 -L/usr/lib -lboost_python-py35	
 
-INCLUDEPATH +=
+INCLUDEPATH += /usr/include/python3.5
 
 FORMS    += ./mainwindow.ui
 
