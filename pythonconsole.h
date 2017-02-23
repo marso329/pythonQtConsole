@@ -4,14 +4,19 @@
 #include <QKeyEvent>
  #include <QDebug> 
 #include <QCompleter>
+#include <QStringList>
+#include <QStringListModel>
+#include <QAbstractItemView>
+#include <QScrollBar>
 #include <iostream>
+#include <QString>
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <vector>
 #include <boost/python.hpp>
 
-enum EditorMode { normal,historyMode };
+enum EditorMode { normal,historyMode,completionMode };
 
 using namespace boost::python;
 
@@ -21,6 +26,8 @@ public:
 PythonConsole(QWidget* parent);
 ~PythonConsole();
 private:
+QStringList builtinsList;
+QStringList keywordList;
 const std::string& getCurrentHistory();
 void advanceHistory();
 void retardHistory();
@@ -35,6 +42,7 @@ QCompleter* _completer;
 boost::python::object pythonMainModule;
 public Q_SLOTS:
 void keyPressEvent(QKeyEvent *e);
+void insertCompletion(const QString&);
 };
 
 #endif
