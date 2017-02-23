@@ -43,6 +43,14 @@ PythonConsole::PythonConsole(QWidget* parent) :
 	} catch (error_already_set ) {
 		PyErr_Print();
 	}
+	try{
+	main_namespace["PythonStdIoRedirect"] = class_<PythonStdIoRedirect>("PythonStdIoRedirect", init<>())
+	    .def("write", &PythonStdIoRedirect::Write);
+	boost::python::import("sys").attr("stderr") = python_stdio_redirector;
+	boost::python::import("sys").attr("stdout") = python_stdio_redirector;
+	} catch (error_already_set ) {
+		PyErr_Print();
+	}
 QObject::connect(_completer, SIGNAL(activated(const QString&)),
 		this, SLOT(insertCompletion(const QString&)));
 }
@@ -107,6 +115,9 @@ std::string lastLine = lines.back();
 boost::split(wordsOnCurrentLine, lastLine, boost::is_any_of(" \t"),
 		boost::token_compress_on);
 std::string lastWord = wordsOnCurrentLine.back();
+std::string lastLineWithout=std::string(lastLine);
+boost::erase_all(lastLineWithout, " ");
+boost::erase_all(lastLineWithout, "\t");
 unsigned tabs = 0;
 for (auto it = lastLine.begin(); it != lastLine.end(); it++) {
 	if (*it == '\t') {
@@ -126,6 +137,7 @@ case normal: {
 	case Qt::Key_Return: {
 		history.push_back(lastLine);
 		//if last was an if or for... statement
+		std::cout<<lastLineWithout.size()<<std::endl;
 		if (lastChar == ':') {
 			QTextEdit::keyPressEvent(e);
 			for (std::size_t i = 0; i < tabs + 1; i++) {
@@ -133,7 +145,12 @@ case normal: {
 			}
 			delete tabsEvent;
 			return;
-		} else {
+		}
+		else if(lastLineWithout.size()==0){
+			mode=newLine;
+			break;
+		}
+		else {
 			QTextEdit::keyPressEvent(e);
 			for (std::size_t i = 0; i < tabs; i++) {
 				keyPressEvent(tabsEvent);
@@ -262,11 +279,38 @@ case completionMode: {
 	return;
 	break;
 }
+case newLine:{
+	if (lastLineWithout.size()==0){
+		append(QString::fromStdString(executeCommand(textInEditor)));
+		mode=normal;
+		return;
+	}
+	else{
+		mode=normal;
+
+	}
+	break;
+}
+
 default: {
 
 }
 }
 QTextEdit::keyPressEvent(e);
+}
+
+std::string PythonConsole::executeCommand(std::string& codeToExecute){
+	static std::string temp="";
+	try{
+	 object tempOb=  boost::python::exec(boost::python::str(codeToExecute)
+	    ,main_namespace
+	    , main_namespace);
+	 return python_stdio_redirector.GetOutput();
+	} catch (error_already_set ) {
+	PyErr_Print();
+	PyErr_Clear();
+}
+	return temp;
 }
 
 PythonConsole::~PythonConsole() {

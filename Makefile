@@ -50,11 +50,13 @@ OBJECTS_DIR   = debug/
 
 SOURCES       = main.cpp \
 		pythonconsole.cpp \
-		mainwindow.cpp debug/moc_mainwindow.cpp \
+		mainwindow.cpp \
+		pythonstdioredirect.cpp debug/moc_mainwindow.cpp \
 		debug/moc_pythonconsole.cpp
 OBJECTS       = debug/main.o \
 		debug/pythonconsole.o \
 		debug/mainwindow.o \
+		debug/pythonstdioredirect.o \
 		debug/moc_mainwindow.o \
 		debug/moc_pythonconsole.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -128,9 +130,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		VideoEditor.pro mainwindow.h \
-		pythonconsole.h main.cpp \
+		pythonconsole.h \
+		pythonstdioredirect.h main.cpp \
 		pythonconsole.cpp \
-		mainwindow.cpp
+		mainwindow.cpp \
+		pythonstdioredirect.cpp
 QMAKE_TARGET  = VideoEditor
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = VideoEditor
@@ -324,8 +328,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h pythonconsole.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp pythonconsole.cpp mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h pythonconsole.h pythonstdioredirect.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp pythonconsole.cpp mainwindow.cpp pythonstdioredirect.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -354,10 +358,12 @@ compiler_moc_header_clean:
 	-$(DEL_FILE) debug/moc_mainwindow.cpp debug/moc_pythonconsole.cpp
 debug/moc_mainwindow.cpp: ui_mainwindow.h \
 		pythonconsole.h \
+		pythonstdioredirect.h \
 		mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/martin/repositories/VideoEditor -I/usr/include/python3.5 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o debug/moc_mainwindow.cpp
 
-debug/moc_pythonconsole.cpp: pythonconsole.h
+debug/moc_pythonconsole.cpp: pythonstdioredirect.h \
+		pythonconsole.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/martin/repositories/VideoEditor -I/usr/include/python3.5 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include pythonconsole.h -o debug/moc_pythonconsole.cpp
 
 compiler_moc_source_make_all:
@@ -366,7 +372,8 @@ compiler_uic_make_all: ui_mainwindow.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_mainwindow.h
 ui_mainwindow.h: mainwindow.ui \
-		pythonconsole.h
+		pythonconsole.h \
+		pythonstdioredirect.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic mainwindow.ui -o ui_mainwindow.h
 
 compiler_yacc_decl_make_all:
@@ -381,16 +388,22 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 
 debug/main.o: main.cpp mainwindow.h \
 		ui_mainwindow.h \
-		pythonconsole.h
+		pythonconsole.h \
+		pythonstdioredirect.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/main.o main.cpp
 
-debug/pythonconsole.o: pythonconsole.cpp pythonconsole.h
+debug/pythonconsole.o: pythonconsole.cpp pythonconsole.h \
+		pythonstdioredirect.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/pythonconsole.o pythonconsole.cpp
 
 debug/mainwindow.o: mainwindow.cpp mainwindow.h \
 		ui_mainwindow.h \
-		pythonconsole.h
+		pythonconsole.h \
+		pythonstdioredirect.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/mainwindow.o mainwindow.cpp
+
+debug/pythonstdioredirect.o: pythonstdioredirect.cpp pythonstdioredirect.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/pythonstdioredirect.o pythonstdioredirect.cpp
 
 debug/moc_mainwindow.o: debug/moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug/moc_mainwindow.o debug/moc_mainwindow.cpp
