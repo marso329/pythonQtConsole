@@ -15,8 +15,10 @@
 #include <boost/algorithm/string/split.hpp>
 #include <vector>
 #include <boost/python.hpp>
+#include <boost/algorithm/string.hpp>
+#include "pythonstdioredirect.h"
 
-enum EditorMode { normal,historyMode,completionMode };
+enum EditorMode { normal,historyMode,completionMode,newLine };
 
 using namespace boost::python;
 
@@ -32,6 +34,7 @@ const std::string& getCurrentHistory();
 void advanceHistory();
 void retardHistory();
 void addLineToHistory(const std::string& newLine);
+std::string executeCommand(std::string&);
 EditorMode mode= normal;
 std::vector<std::string> history;
 std::size_t historyPosition;
@@ -40,6 +43,7 @@ boost::python::dict main_namespace ;
 
 QCompleter* _completer;
 boost::python::object pythonMainModule;
+PythonStdIoRedirect python_stdio_redirector;
 public Q_SLOTS:
 void keyPressEvent(QKeyEvent *e);
 void insertCompletion(const QString&);
