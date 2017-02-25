@@ -53,6 +53,7 @@ PythonConsole::PythonConsole(QWidget* parent) :
 	}
 QObject::connect(_completer, SIGNAL(activated(const QString&)),
 		this, SLOT(insertCompletion(const QString&)));
+firstLineNumber=0;
 }
 
 void PythonConsole::advanceHistory() {
@@ -107,6 +108,8 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 std::vector<std::string> lines;
 std::vector<std::string> wordsOnCurrentLine;
 std::string textInEditor = toPlainText().toStdString();
+boost::iterator_range<std::string::iterator> r = boost::find_nth(textInEditor, "\n", firstLineNumber);
+textInEditor.erase(textInEditor.begin(),r.end());
 //split text into lines
 boost::split(lines, textInEditor, boost::is_any_of("\n"),
 		boost::token_compress_on);
@@ -282,6 +285,7 @@ case completionMode: {
 case newLine:{
 	if (lastLineWithout.size()==0){
 		append(QString::fromStdString(executeCommand(textInEditor)));
+		firstLineNumber=currentLine;
 		mode=normal;
 		return;
 	}

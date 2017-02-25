@@ -16,6 +16,7 @@
 #include <vector>
 #include <boost/python.hpp>
 #include <boost/algorithm/string.hpp>
+
 #include "pythonstdioredirect.h"
 
 enum EditorMode { normal,historyMode,completionMode,newLine };
@@ -29,6 +30,7 @@ PythonConsole(QWidget* parent);
 ~PythonConsole();
 private:
 QStringList builtinsList;
+long long unsigned firstLineNumber;
 QStringList keywordList;
 const std::string& getCurrentHistory();
 void advanceHistory();
