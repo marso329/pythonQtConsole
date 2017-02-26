@@ -1,3 +1,5 @@
+include ( common.prf ) 
+
 QT += core gui widgets
 
 TARGET = pythonQtConsole
@@ -30,8 +32,6 @@ HEADERS +=	$$INCLUDEDIR/pythonConsoleMain.h \
 		$$INCLUDEDIR/stdoutRedirect.h\
          	$$INCLUDEDIR/worker.h
 
-LIBS += -L/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu -lpython3.5 -L/usr/lib -lboost_python-py35	
-
-INCLUDEPATH += /usr/include/python3.5 ./$${INCLUDEDIR}
+INCLUDEPATH +=./$${INCLUDEDIR}
 
 

@@ -123,8 +123,6 @@ void PythonConsole::addLineToHistory(const std::string& newLine) {
 }
 
 void PythonConsole::insertCompletion(const QString& completion) {
-	std::cout << "activated wtih:" << std::endl;
-	qDebug() << completion;
 	QTextCursor tc = textCursor();
 	tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
 	if (tc.selectedText() == ".") {
@@ -172,7 +170,6 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 		case Qt::Key_Return: {
 			history.push_back(lastLine);
 			//if last was an if or for... statement
-			std::cout << lastLineWithout.size() << std::endl;
 			if (lastChar == ':') {
 				QTextEdit::keyPressEvent(e);
 				for (std::size_t i = 0; i < tabs + 1; i++) {
@@ -193,10 +190,8 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 			}
 		}
 		case Qt::Key_Space: {
-			std::cout << "space event" << std::endl;
 			//ctrl+space
 			if (e->modifiers() & Qt::ControlModifier) {
-				std::cout << "ctrl=space: " << lastWord << std::endl;
 				QStringList found;
 				QString lastWordQString = QString::fromStdString(lastWord);
 				if (lastWord.size() == 0) {
@@ -251,7 +246,9 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 			cursor.insertText(QString::fromStdString(getCurrentHistory()));
 			cursor.movePosition(QTextCursor::End);
 			setTextCursor(cursor);
+
 			mode = historyMode;
+			keyPressEvent(e);
 			return;
 		}
 		}
@@ -294,10 +291,8 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 		break;
 	}
 	case completionMode: {
-		std::cout << "completionmodecase" << std::endl;
 		mode = normal;
 		if (e->key() == Qt::Key_Return) {
-			std::cout << "enter in compeltion mode" << std::endl;
 			if (_completer->popup()->currentIndex().isValid()) {
 				insertCompletion(_completer->currentCompletion());
 				_completer->popup()->hide();

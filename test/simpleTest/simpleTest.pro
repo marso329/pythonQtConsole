@@ -1,8 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2012-03-04T23:24:55
-#
-#-------------------------------------------------
+include ( ../../common.prf ) 
 
 QT += core gui widgets
 
@@ -25,7 +21,4 @@ LIBS += -L../../lib -lpythonQtConsole
 
 
 FORMS    += ./mainwindow.ui
-LIBS += -L/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu -lpython3.5 -L/usr/lib -lboost_python-py35	
-
-INCLUDEPATH += /usr/include/python3.5 
 
