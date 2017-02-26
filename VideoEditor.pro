@@ -22,14 +22,21 @@ MOC_DIR = debug
 
 SOURCES += ./main.cpp \
 		./pythonconsole.cpp \
+		./pythonConsoleMain.cpp \
 	mainwindow.cpp \
-	./pythonstdioredirect.cpp
+	./pythonstdioredirect.cpp \
+	./history.cpp \
+	./stdoutRedirect.cpp \
+	./worker.cpp
 			
 
 HEADERS += ./mainwindow.h \
+./pythonConsoleMain.h \
 		./pythonconsole.h \
-		./pythonstdioredirect.h
-         
+		./pythonstdioredirect.h \
+		./history.h \
+		./stdoutRedirect.h\
+         ./worker.h
 LIBS += -L/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu -lpython3.5 -L/usr/lib -lboost_python-py35	
 
 INCLUDEPATH += /usr/include/python3.5

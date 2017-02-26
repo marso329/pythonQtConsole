@@ -3,9 +3,14 @@
 #include <boost/circular_buffer.hpp>
 #include <iostream>
 #include <sstream>
+#include <QObject>
 
 class PythonStdIoRedirect {
+
 public:
+	PythonStdIoRedirect();
+	PythonStdIoRedirect(int);
+	~PythonStdIoRedirect();
     typedef boost::circular_buffer<std::string> ContainerType;
     void Write( std::string const& str ) ;
     inline static std::string GetOutput()
@@ -24,6 +29,8 @@ public:
     };
 private:
     static ContainerType m_outputs; // must be static, otherwise output is missing
+//Q_SIGNALS:
+//void gotOutput(const QString& data);
 };
 
 #endif
