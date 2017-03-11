@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_PythonConsole_t {
-    QByteArrayData data[15];
-    char stringdata0[168];
+    QByteArrayData data[16];
+    char stringdata0[178];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -43,14 +43,15 @@ QT_MOC_LITERAL(10, 105, 16), // "insertCompletion"
 QT_MOC_LITERAL(11, 122, 13), // "receiveOutput"
 QT_MOC_LITERAL(12, 136, 11), // "resizeEvent"
 QT_MOC_LITERAL(13, 148, 13), // "QResizeEvent*"
-QT_MOC_LITERAL(14, 162, 5) // "event"
+QT_MOC_LITERAL(14, 162, 5), // "event"
+QT_MOC_LITERAL(15, 168, 9) // "getResult"
 
     },
     "PythonConsole\0sendStringToOutput\0\0"
     "data\0executeCode\0result\0boost::python::dict\0"
     "keyPressEvent\0QKeyEvent*\0e\0insertCompletion\0"
     "receiveOutput\0resizeEvent\0QResizeEvent*\0"
-    "event"
+    "event\0getResult"
 };
 #undef QT_MOC_LITERAL
 
@@ -60,7 +61,7 @@ static const uint qt_meta_data_PythonConsole[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -68,14 +69,15 @@ static const uint qt_meta_data_PythonConsole[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   44,    2, 0x06 /* Public */,
-       4,    2,   47,    2, 0x06 /* Public */,
+       1,    1,   49,    2, 0x06 /* Public */,
+       4,    2,   52,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       7,    1,   52,    2, 0x0a /* Public */,
-      10,    1,   55,    2, 0x0a /* Public */,
-      11,    1,   58,    2, 0x0a /* Public */,
-      12,    1,   61,    2, 0x0a /* Public */,
+       7,    1,   57,    2, 0x0a /* Public */,
+      10,    1,   60,    2, 0x0a /* Public */,
+      11,    1,   63,    2, 0x0a /* Public */,
+      12,    1,   66,    2, 0x0a /* Public */,
+      15,    1,   69,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
@@ -86,6 +88,7 @@ static const uint qt_meta_data_PythonConsole[] = {
     QMetaType::Void, QMetaType::QString,    2,
     QMetaType::Void, QMetaType::QString,    2,
     QMetaType::Void, 0x80000000 | 13,   14,
+    QMetaType::Void, QMetaType::QString,    2,
 
        0        // eod
 };
@@ -102,6 +105,7 @@ void PythonConsole::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 3: _t->insertCompletion((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 4: _t->receiveOutput((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 5: _t->resizeEvent((*reinterpret_cast< QResizeEvent*(*)>(_a[1]))); break;
+        case 6: _t->getResult((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -158,13 +162,13 @@ int PythonConsole::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }

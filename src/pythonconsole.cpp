@@ -63,7 +63,7 @@ PythonConsole::PythonConsole(QWidget* parent) :
 	QObject::connect(_completer, SIGNAL(activated(const QString&)),
 			this, SLOT(insertCompletion(const QString&)));
 	firstLineNumber = 0;
-	stdoutRedirection* tempRedirect= new stdoutRedirection(this);
+	stdoutRedirection* tempRedirect = new stdoutRedirection(this);
 	stdoutput_ptr stdoutoutPtr(tempRedirect);
 	try {
 		main_namespace["stdoutRedirect"] = boost::python::class_<
@@ -78,16 +78,18 @@ PythonConsole::PythonConsole(QWidget* parent) :
 	}
 	QObject::connect(tempRedirect, SIGNAL(gotOutput(const QString&)),
 			this, SLOT(receiveOutput(const QString&)));
- worker=new Worker();
- workerThread=new QThread();
- worker->moveToThread(workerThread);
+	worker = new Worker();
+	workerThread = new QThread();
+	worker->moveToThread(workerThread);
 //boost::python::class_< stdoutRedirection, stdoutput_ptr>("stdoutRedirection", boost::python::no_init);
-	QObject::connect(this, &PythonConsole::executeCode,
-			worker, &Worker::doWork);
+	QObject::connect(this, &PythonConsole::executeCode, worker,
+			&Worker::doWork);
+	QObject::connect(worker, &Worker::resultReady, this,
+			&PythonConsole::getResult);
 	workerThread->start();
 
-	qRegisterMetaType<std::string >();
-	qRegisterMetaType<boost::python::dict >();
+	qRegisterMetaType<std::string>();
+	qRegisterMetaType<boost::python::dict>();
 }
 
 void PythonConsole::advanceHistory() {
@@ -115,6 +117,11 @@ const std::string& PythonConsole::getCurrentHistory() {
 	} else {
 		return history[historyPosition - 1];
 	}
+}
+
+void PythonConsole::removeLastLineFromHistory() {
+	history.pop_back();
+	historyPosition = history.size();
 }
 
 void PythonConsole::addLineToHistory(const std::string& newLine) {
@@ -233,9 +240,10 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 		}
 
 		case Qt::Key_Up: {
-			if(lastLineWithout.size()!=0){
-			addLineToHistory(lastLine);
+			if (lastLineWithout.size() != 0) {
+				addLineToHistory(lastLine);
 			}
+			addLineToHistory("");
 			retardHistory();
 			QTextCursor cursor = textCursor();
 			cursor.movePosition(QTextCursor::Start);
@@ -246,9 +254,7 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 			cursor.insertText(QString::fromStdString(getCurrentHistory()));
 			cursor.movePosition(QTextCursor::End);
 			setTextCursor(cursor);
-
 			mode = historyMode;
-			keyPressEvent(e);
 			return;
 		}
 		}
@@ -283,6 +289,7 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 			return;
 		}
 		default: {
+			removeLastLineFromHistory();
 			mode = normal;
 			break;
 		}
@@ -314,10 +321,12 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 			cursor.movePosition(QTextCursor::End);
 			cursor.select(QTextCursor::LineUnderCursor);
 			cursor.removeSelectedText();
-			//cursor.deletePreviousChar(); // Added to trim the newline char when removing last line
 			setTextCursor(cursor);
-			//int posOfNewline= toPlainText().lastIndexOf("\n");
-			//cursor.SetPosition(posOfNewline);
+			cursor = textCursor();
+			cursor.movePosition(QTextCursor::End);
+			cursor.select(QTextCursor::LineUnderCursor);
+			cursor.removeSelectedText();
+			setTextCursor(cursor);
 			Q_EMIT sendStringToOutput(toPlainText());
 			clear();
 			executeCommand(textInEditor);
@@ -337,18 +346,14 @@ void PythonConsole::keyPressEvent(QKeyEvent *e) {
 	QTextEdit::keyPressEvent(e);
 }
 
-std::string PythonConsole::executeCommand(std::string& codeToExecute) {
+void PythonConsole::executeCommand(std::string& codeToExecute) {
 	static std::string temp = "";
 	try {
-		//object tempOb = boost::python::exec(boost::python::str(codeToExecute),
-		//		main_namespace, main_namespace);
 		Q_EMIT executeCode(QString::fromStdString( codeToExecute),main_namespace);
-		return python_stdio_redirector.GetOutput();
 	} catch (error_already_set ) {
 		PyErr_Print();
 		PyErr_Clear();
 	}
-	return temp;
 }
 void PythonConsole::receiveOutput(const QString& data) {
 	Q_EMIT sendStringToOutput(data);
@@ -356,9 +361,12 @@ void PythonConsole::receiveOutput(const QString& data) {
 
 PythonConsole::~PythonConsole() {
 }
-void PythonConsole::resizeEvent(QResizeEvent * event){
+void PythonConsole::resizeEvent(QResizeEvent * event) {
 	QTextEdit::resizeEvent(event);
 	QTextCursor c = textCursor();
 	c.movePosition(QTextCursor::End);
 	setTextCursor(c);
+}
+void PythonConsole::getResult(const QString& data) {
+	Q_EMIT sendStringToOutput(data + "\n");
 }

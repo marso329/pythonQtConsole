@@ -9,6 +9,7 @@ History::History(QWidget* parent):QTextEdit(parent){
 	setFont(font);
 	QFontMetrics metrics(font);
 	setTabStopWidth(4 * metrics.width(' '));
+	setReadOnly(true);
 }
 
 History::~History(){

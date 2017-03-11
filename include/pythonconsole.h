@@ -48,8 +48,9 @@ private:
 	const std::string& getCurrentHistory();
 	void advanceHistory();
 	void retardHistory();
+	void removeLastLineFromHistory();
 	void addLineToHistory(const std::string& newLine);
-	std::string executeCommand(std::string&);
+	void executeCommand(std::string&);
 	EditorMode mode = normal;
 	std::vector<std::string> history;
 	std::size_t historyPosition;
@@ -71,6 +72,7 @@ public Q_SLOTS:
 	void insertCompletion(const QString&);
 	void receiveOutput(const QString&);
 	void resizeEvent(QResizeEvent * event);
+	void getResult(const QString&);
 
 };
 
