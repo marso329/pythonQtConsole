@@ -9,6 +9,9 @@ class pythonConsoleMain:public QWidget{
 public:
 	pythonConsoleMain(QWidget* parent);
 	~pythonConsoleMain();
+	PythonConsole* pc;
+	boost::python::dict getMainNamespace();
+	void setMainNamespace(boost::python::dict);
 private:
 protected:
 

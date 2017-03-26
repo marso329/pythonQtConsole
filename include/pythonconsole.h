@@ -41,6 +41,8 @@ class PythonConsole: public QTextEdit {
 public:
 	PythonConsole(QWidget* parent);
 	~PythonConsole();
+	boost::python::object main_module;
+	boost::python::dict main_namespace;
 private:
 	QStringList builtinsList;
 	long long unsigned firstLineNumber;
@@ -54,8 +56,7 @@ private:
 	EditorMode mode = normal;
 	std::vector<std::string> history;
 	std::size_t historyPosition;
-	boost::python::object main_module;
-	boost::python::dict main_namespace;
+
 
 	QCompleter* _completer;
 	boost::python::object pythonMainModule;
