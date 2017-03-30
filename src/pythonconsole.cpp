@@ -30,7 +30,7 @@ PythonConsole::PythonConsole(QWidget* parent) :
 		dict builtins = extract<dict>(
 				main_namespace["__builtins__"].attr("__dict__"));
 		list keys = builtins.keys();
-		for (std::size_t i = 0; i < len(keys); i++) {
+		for (std::size_t i = 0; i < (std::size_t)len(keys); i++) {
 			std::string value = boost::python::extract<std::string>(keys[i]);
 			builtinsList.append(QString::fromStdString(value));
 
@@ -39,7 +39,7 @@ PythonConsole::PythonConsole(QWidget* parent) :
 		boost::python::dict keyword_namespace = extract<dict>(
 				keywords.attr("__dict__"));
 		keys = keyword_namespace.keys();
-		for (std::size_t i = 0; i < len(keys); i++) {
+		for (std::size_t i = 0; i < (size_t)len(keys); i++) {
 			std::string value = boost::python::extract<std::string>(keys[i]);
 			keywordList.append(QString::fromStdString(value));
 
@@ -51,15 +51,7 @@ PythonConsole::PythonConsole(QWidget* parent) :
 	} catch (error_already_set ) {
 		PyErr_Print();
 	}
-	try {
-		main_namespace["PythonStdIoRedirect"] = class_<PythonStdIoRedirect>(
-				"PythonStdIoRedirect", init<>()).def("write",
-				&PythonStdIoRedirect::Write);
-		boost::python::import("sys").attr("stderr") = python_stdio_redirector;
-		boost::python::import("sys").attr("stdout") = python_stdio_redirector;
-	} catch (error_already_set ) {
-		PyErr_Print();
-	}
+
 	QObject::connect(_completer, SIGNAL(activated(const QString&)),
 			this, SLOT(insertCompletion(const QString&)));
 	firstLineNumber = 0;

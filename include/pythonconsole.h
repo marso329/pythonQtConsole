@@ -18,14 +18,13 @@
 #include <boost/python.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/python/module.hpp>
-#include "pythonstdioredirect.h"
 #include "stdoutRedirect.h"
 #include <boost/smart_ptr.hpp>
 #include "worker.h"
 #include <QThread>
 
-Q_DECLARE_METATYPE(boost::python::dict);
-Q_DECLARE_METATYPE(std::string);
+Q_DECLARE_METATYPE(boost::python::dict)
+Q_DECLARE_METATYPE(std::string)
 typedef boost::shared_ptr< stdoutRedirection > stdoutput_ptr;
 
 
@@ -60,7 +59,6 @@ private:
 
 	QCompleter* _completer;
 	boost::python::object pythonMainModule;
-	PythonStdIoRedirect python_stdio_redirector;
 	Worker *worker;
 	QThread* workerThread;
 Q_SIGNALS:
