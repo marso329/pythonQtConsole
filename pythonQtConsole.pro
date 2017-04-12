@@ -8,7 +8,7 @@ TEMPLATE = lib
 CONFIG += qt
 CONFIG += no_keywords
 
-QMAKE_CXXFLAGS += -g -std=c++11 -shared -Wl,--export-dynamic
+QMAKE_CXXFLAGS += -g -std=c++11 -shared -Wl,--export-dynamic -pedantic -Werror -Wall
 
 OBJ_DIR = build
 OBJECTS_DIR = build
@@ -19,7 +19,6 @@ SRCDIR=src
 
 SOURCES +=	$$SRCDIR/pythonconsole.cpp \
 		$$SRCDIR/pythonConsoleMain.cpp \
-		$$SRCDIR/pythonstdioredirect.cpp \
 		$$SRCDIR/history.cpp \
 		$$SRCDIR/stdoutRedirect.cpp \
 		$$SRCDIR/worker.cpp
@@ -27,7 +26,6 @@ SOURCES +=	$$SRCDIR/pythonconsole.cpp \
 
 HEADERS +=	$$INCLUDEDIR/pythonConsoleMain.h \
 		$$INCLUDEDIR/pythonconsole.h \
-		$$INCLUDEDIR/pythonstdioredirect.h \
 		$$INCLUDEDIR/history.h \
 		$$INCLUDEDIR/stdoutRedirect.h\
          	$$INCLUDEDIR/worker.h

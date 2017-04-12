@@ -3,7 +3,7 @@
 
 pythonConsoleMain::pythonConsoleMain(QWidget* parent):QWidget(parent){
 	QGridLayout *layout = new QGridLayout(this);
-	PythonConsole* pc=new PythonConsole(this);
+	pc=new PythonConsole(this);
 	History* qte =new History(this);
 	QSplitter *splitter = new QSplitter();
 	splitter->setOrientation(Qt::Vertical);
@@ -19,6 +19,13 @@ pythonConsoleMain::pythonConsoleMain(QWidget* parent):QWidget(parent){
 
 }
 
+boost::python::dict pythonConsoleMain::getMainNamespace(){
+	return pc->main_namespace;
+}
+
+void pythonConsoleMain::setMainNamespace(boost::python::dict main_namespace){
+	pc->main_namespace=main_namespace;
+}
 pythonConsoleMain::~pythonConsoleMain(){
 
 }
